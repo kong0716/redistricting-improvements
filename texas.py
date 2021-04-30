@@ -31,8 +31,7 @@ initial_partition = GeographicPartition(
     assignment="USCD",
     updaters={
         "cut_edges": cut_edges,
-        "population": Tally("TOTPOP", alias="population"),
-        "PRES16": election
+        "population": Tally("TOTPOP", alias="population")
     }
 )
 
@@ -65,7 +64,7 @@ from gerrychain import MarkovChain
 from gerrychain.constraints import single_flip_contiguous, contiguous
 from gerrychain.proposals import propose_random_flip
 from gerrychain.accept import always_accept
-steps = 3
+steps = 100
 chain = MarkovChain(
     proposal=proposal,
     constraints=[single_flip_contiguous],
@@ -73,9 +72,11 @@ chain = MarkovChain(
     initial_state=initial_partition,
     total_steps=steps
 )
+print("Running chain")
+last1 = None
+for partition in chain.with_progress_bar():
+    last1 = partition
 
-*_, last = chain.with_progress_bar()
-
-last.plot(figsize=(10, 10), cmap="tab20")
+last1.plot(figsize=(10, 10), cmap="tab20")
 plt.axis('off')
 plt.show()
